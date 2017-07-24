@@ -3,17 +3,18 @@ pipeline {
 	stages {
 		stage('Build') {
 			steps {
-				sh 'echo "Hello World"'
-				sh '''
-					echo "Multiline shell steps works too"
-					ls -lah
-				'''
+				sh 'cd src'
+				sh 'javac TestMain.java'
+				sh 'cd ..'
             		}
         	}
 		stage('Deploy'){
 			steps {
 				retry(3) {
 					sh 'echo "This is deploy stage"'
+					sh 'cd src'
+					sh 'java TestMain > ../output.txt'
+					sh 'cd ..'
 				}
 				timeout (time:3, unit:'MINUTES') {
 					sh 'echo "Time check for health"'
@@ -22,7 +23,8 @@ pipeline {
 		}
 		stage('Test') {
 			steps {
-				sh 'echo "Passed";exit 0'
+				sh 'cat output.txt'
+				sh 'echo "Tests passed"; exit 0'
 			}
 		}
 	}
