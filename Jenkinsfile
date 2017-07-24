@@ -3,18 +3,14 @@ pipeline {
 	stages {
 		stage('Build') {
 			steps {
-				sh 'cd src'
-				sh 'javac TestMain.java'
-				sh 'cd ..'
+				sh 'javac src/TestMain.java'
             		}
         	}
 		stage('Deploy'){
 			steps {
 				retry(3) {
 					sh 'echo "This is deploy stage"'
-					sh 'cd src'
-					sh 'java TestMain > ../output.txt'
-					sh 'cd ..'
+					sh 'java src/TestMain > output.txt'
 				}
 				timeout (time:3, unit:'MINUTES') {
 					sh 'echo "Time check for health"'
