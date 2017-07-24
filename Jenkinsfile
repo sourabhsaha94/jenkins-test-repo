@@ -10,7 +10,10 @@ pipeline {
 			steps {
 				retry(3) {
 					sh 'echo "This is deploy stage"'
-					sh 'java src/TestMain > output.txt'
+					sh 'cd src/'
+					sh 'ls'
+					sh 'java TestMain > ../output.txt'
+					sh 'cd ../'
 				}
 				timeout (time:3, unit:'MINUTES') {
 					sh 'echo "Time check for health"'
