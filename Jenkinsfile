@@ -10,7 +10,17 @@ pipeline {
 			steps {
 				retry(3) {
 					sh 'echo "This is deploy stage"'
-					sh 'cd src/ && java TestMain > ../output.txt && cd ..'
+					sh '''
+					cd src/ 
+					java TestMain
+					echo 'Main-Class: TestMain' > manifest.txt
+					jar cvfm SampleJar.jar manifest.txt *.class
+					cd ..
+					mkdir test
+					cp src/SampleJar.jar test/
+					cd test/
+					java -jar SampleJar.jar > ../output.txt
+					cd ..'''
 				}
 				timeout (time:3, unit:'MINUTES') {
 					sh 'echo "Time check for health"'
